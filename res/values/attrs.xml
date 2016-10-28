@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="DrawerContainer">
+        <attr name="iosStyle" format="boolean"/>
+        <attr name="edge" format="boolean"/>
+        <attr name="pad" format="dimension"/>
+        <attr name="edgePad" format="dimension"/>
+        <attr name="speedFactor" format="float"/>
+    </declare-styleable>
+</resources>
