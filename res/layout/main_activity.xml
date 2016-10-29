@@ -8,6 +8,7 @@
                                 custom:pad="56dp"
                                 custom:edgePad="16dp"
                                 custom:speedFactor="3"
+                                custom:tweaking="2"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent">
 

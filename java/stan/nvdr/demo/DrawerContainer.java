@@ -28,10 +28,12 @@ public class DrawerContainer
     private float edgePad = 0;
     private float speedFactor = 1;
     private float iosOffset = 2;
+    private float tweaking = 2;
 
     private AnimatorSet currentAnimation;
     private int durationAnimation = 150;
     private float drawerPosition;
+    private float oldPosition = 0;
     private int drawerWidth;
 
     private boolean drawerOpened;
@@ -59,6 +61,7 @@ public class DrawerContainer
             pad = a.getDimension(R.styleable.DrawerContainer_pad, 0);
             edgePad = a.getDimension(R.styleable.DrawerContainer_edgePad, 0);
             speedFactor = a.getFloat(R.styleable.DrawerContainer_speedFactor, 1);
+            setTweaking(a.getFloat(R.styleable.DrawerContainer_tweaking, 2));
         }
         finally
         {
@@ -156,6 +159,7 @@ public class DrawerContainer
             public void onAnimationEnd(Animator animator)
             {
                 drawerOpened = true;
+                oldPosition = drawerWidth;
             }
 
             @Override
@@ -170,6 +174,19 @@ public class DrawerContainer
 
             }
         });
+        currentAnimation.start();
+    }
+    public void moveDrawer(float start, float end, int duration, Animator.AnimatorListener listener)
+    {
+        if(drawerLayout == null)
+        {
+            return;
+        }
+        cancelCurrentAnimation();
+        currentAnimation = new AnimatorSet();
+        currentAnimation.play(ObjectAnimator.ofFloat(this, "drawerPosition", start, end));
+        currentAnimation.setDuration(duration);
+        currentAnimation.addListener(listener);
         currentAnimation.start();
     }
 
@@ -199,6 +216,7 @@ public class DrawerContainer
                 {
                     listener.onAnimationEnd();
                 }
+                oldPosition = 0;
             }
 
             @Override
@@ -317,9 +335,12 @@ public class DrawerContainer
                 float x = (ev.getX() - startedTrackingX)*speedFactor;
                 if(drawerOpened)
                 {
-                    x += drawerWidth;
+//                    x = drawerWidth - Math.abs(x);
+//                    x += drawerWidth;
+                    x += (drawerWidth / tweaking)*2;
                 }
-                if(x > (drawerWidth / 2))
+                Log.e(getClass().getName(), "x " + x + " t " + (drawerWidth / tweaking));
+                if(x > (drawerWidth / tweaking))
                 {
                     openDrawer();
                 }
@@ -345,14 +366,39 @@ public class DrawerContainer
         if(ev.getAction() == MotionEvent.ACTION_MOVE && startedTouch)
         {
             moveProcess = true;
+            float newPosition = (ev.getX() - startedTrackingX)*speedFactor;
             if(drawerOpened)
             {
-                setDrawerPosition(drawerWidth + (ev.getX() - startedTrackingX)*speedFactor);
+                newPosition += drawerWidth;
+            }
+            float diff = newPosition - oldPosition;
+            if(Math.abs(diff) < drawerWidth/2)
+            {
+                setDrawerPosition(newPosition);
             }
             else
             {
-                setDrawerPosition((ev.getX() - startedTrackingX)*speedFactor);
+                moveDrawer(oldPosition, newPosition, (int)Math.abs(diff)/3, new Animator.AnimatorListener()
+                {
+                    @Override
+                    public void onAnimationStart(Animator animation)
+                    {
+                    }
+                    @Override
+                    public void onAnimationEnd(Animator animation)
+                    {
+                    }
+                    @Override
+                    public void onAnimationCancel(Animator animation)
+                    {
+                    }
+                    @Override
+                    public void onAnimationRepeat(Animator animation)
+                    {
+                    }
+                });
             }
+            oldPosition = newPosition;
             return true;
         }
         return false;
@@ -422,6 +468,7 @@ public class DrawerContainer
                 ViewGroup.LayoutParams lp = drawerLayout.getLayoutParams();
                 drawerWidth = getMeasuredWidth() - (int)pad;
                 lp.width = drawerWidth;
+                Log.e(getClass().getName(), "drawerWidth " + drawerWidth);
                 drawerLayout.setLayoutParams(lp);
                 setDrawerPosition(0);
             }
@@ -457,6 +504,18 @@ public class DrawerContainer
         else if(iosOffset > 5)
         {
             iosOffset = 5;
+        }
+    }
+    public void setTweaking(float t)
+    {
+        tweaking = t;
+        if(tweaking < 1)
+        {
+            tweaking = 1;
+        }
+        else if(tweaking > 10)
+        {
+            tweaking = 10;
         }
     }
 

@@ -53,6 +53,12 @@ public class MainActivity
                                        {
                                            drawerContainer.setSpeedFactor(f);
                                        }
+
+                                       @Override
+                                       public void tweaking(float f)
+                                       {
+                                           drawerContainer.setTweaking(f);
+                                       }
                                    }))
                                    .commit();
         getSupportFragmentManager().beginTransaction()

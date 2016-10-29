@@ -6,8 +6,8 @@ Demo app for show custom navigation drawer functional
 # Build information
 ## defaultConfig
 	applicationId "stan.nvdr.demo"
-	versionCode 1610291530
-	versionName "0.05"
+	versionCode 1610291729
+	versionName "0.07"
 ## dependencies
 	com.android.support:appcompat-v7:24.2.1
 ## gradle

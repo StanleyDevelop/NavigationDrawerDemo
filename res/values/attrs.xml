@@ -7,5 +7,6 @@
         <attr name="pad" format="dimension"/>
         <attr name="edgePad" format="dimension"/>
         <attr name="speedFactor" format="float"/>
+        <attr name="tweaking" format="float"/>
     </declare-styleable>
 </resources>

@@ -59,6 +59,18 @@ public class MainFragment
                 case R.id.ios_offset_5:
                     behaviour.iosOffset(5);
                     break;
+                case R.id.tweaking_1:
+                    behaviour.tweaking(1);
+                    break;
+                case R.id.tweaking_2:
+                    behaviour.tweaking(2);
+                    break;
+                case R.id.tweaking_5:
+                    behaviour.tweaking(5);
+                    break;
+                case R.id.tweaking_10:
+                    behaviour.tweaking(10);
+                    break;
             }
         }
     };
@@ -82,6 +94,10 @@ public class MainFragment
         v.findViewById(R.id.ios_offset_1).setOnClickListener(clickListener);
         v.findViewById(R.id.ios_offset_2).setOnClickListener(clickListener);
         v.findViewById(R.id.ios_offset_5).setOnClickListener(clickListener);
+        v.findViewById(R.id.tweaking_1).setOnClickListener(clickListener);
+        v.findViewById(R.id.tweaking_2).setOnClickListener(clickListener);
+        v.findViewById(R.id.tweaking_5).setOnClickListener(clickListener);
+        v.findViewById(R.id.tweaking_10).setOnClickListener(clickListener);
     }
     private void init()
     {
@@ -122,5 +138,6 @@ public class MainFragment
         void iosOffset(float o);
         void edgeSwitch(boolean edge);
         void speedFactor(float f);
+        void tweaking(float f);
     }
 }

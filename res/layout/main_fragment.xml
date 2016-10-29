@@ -78,4 +78,40 @@
             android:layout_height="wrap_content"
             android:text="5x"/>
     </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Tweaking"
+        android:textColor="@color/white"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/tweaking_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1x"/>
+
+        <Button
+            android:id="@+id/tweaking_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2x"/>
+
+        <Button
+            android:id="@+id/tweaking_5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="5x"/>
+        <Button
+            android:id="@+id/tweaking_10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="10x"/>
+    </LinearLayout>
 </LinearLayout>
