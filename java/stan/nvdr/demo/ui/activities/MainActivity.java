@@ -37,6 +37,12 @@ public class MainActivity
                                        }
 
                                        @Override
+                                       public void iosOffset(float o)
+                                       {
+                                           drawerContainer.setIosOffset(o);
+                                       }
+
+                                       @Override
                                        public void edgeSwitch(boolean edge)
                                        {
                                            drawerContainer.setEdge(edge);

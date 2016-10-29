@@ -26,6 +26,43 @@ public class MainFragment
     private boolean style;
     private boolean edge;
 
+    private View.OnClickListener clickListener = new View.OnClickListener()
+    {
+        @Override
+        public void onClick(View v)
+        {
+            switch(v.getId())
+            {
+                case R.id.speed_factor_1:
+                    behaviour.speedFactor(1);
+                    break;
+                case R.id.speed_factor_2:
+                    behaviour.speedFactor(2);
+                    break;
+                case R.id.speed_factor_3:
+                    behaviour.speedFactor(3);
+                    break;
+                case R.id.ios_style_switch:
+                    style = !style;
+                    iosSwitch();
+                    break;
+                case R.id.edge_switch:
+                    edge = !edge;
+                    edgeSwitch();
+                    break;
+                case R.id.ios_offset_1:
+                    behaviour.iosOffset(1);
+                    break;
+                case R.id.ios_offset_2:
+                    behaviour.iosOffset(2);
+                    break;
+                case R.id.ios_offset_5:
+                    behaviour.iosOffset(5);
+                    break;
+            }
+        }
+    };
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -39,53 +76,19 @@ public class MainFragment
     {
         ios_style_switch = (Button)v.findViewById(R.id.ios_style_switch);
         edge_switch = (Button)v.findViewById(R.id.edge_switch);
-        v.findViewById(R.id.speed_factor_1).setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                behaviour.speedFactor(1);
-            }
-        });
-        v.findViewById(R.id.speed_factor_2).setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                behaviour.speedFactor(2);
-            }
-        });
-        v.findViewById(R.id.speed_factor_3).setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                behaviour.speedFactor(3);
-            }
-        });
+        v.findViewById(R.id.speed_factor_1).setOnClickListener(clickListener);
+        v.findViewById(R.id.speed_factor_2).setOnClickListener(clickListener);
+        v.findViewById(R.id.speed_factor_3).setOnClickListener(clickListener);
+        v.findViewById(R.id.ios_offset_1).setOnClickListener(clickListener);
+        v.findViewById(R.id.ios_offset_2).setOnClickListener(clickListener);
+        v.findViewById(R.id.ios_offset_5).setOnClickListener(clickListener);
     }
     private void init()
     {
         style = true;
-        ios_style_switch.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                style = !style;
-                iosSwitch();
-            }
-        });
+        ios_style_switch.setOnClickListener(clickListener);
         edge = true;
-        edge_switch.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                edge = !edge;
-                edgeSwitch();
-            }
-        });
+        edge_switch.setOnClickListener(clickListener);
     }
 
     private void iosSwitch()
@@ -116,6 +119,7 @@ public class MainFragment
     public interface MainFragmentBehaviour
     {
         void iosSwitch(boolean style);
+        void iosOffset(float o);
         void edgeSwitch(boolean edge);
         void speedFactor(float f);
     }

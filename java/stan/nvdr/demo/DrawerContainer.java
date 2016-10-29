@@ -27,6 +27,7 @@ public class DrawerContainer
     private float pad = 0;
     private float edgePad = 0;
     private float speedFactor = 1;
+    private float iosOffset = 2;
 
     private AnimatorSet currentAnimation;
     private int durationAnimation = 150;
@@ -53,6 +54,7 @@ public class DrawerContainer
         try
         {
             iosStyle = a.getBoolean(R.styleable.DrawerContainer_iosStyle, false);
+            setIosOffset(a.getFloat(R.styleable.DrawerContainer_speedFactor, 2));
             edge = a.getBoolean(R.styleable.DrawerContainer_edge, false);
             pad = a.getDimension(R.styleable.DrawerContainer_pad, 0);
             edgePad = a.getDimension(R.styleable.DrawerContainer_edgePad, 0);
@@ -114,7 +116,7 @@ public class DrawerContainer
                 }
                 v.setTranslationX(drawerPosition + drawerWidth);
             }
-            drawerLayout.setTranslationX(drawerPosition/2);
+            drawerLayout.setTranslationX(drawerPosition/iosOffset);
         }
         else
         {
@@ -443,6 +445,19 @@ public class DrawerContainer
     public void setSpeedFactor(float f)
     {
         speedFactor = f;
+    }
+
+    public void setIosOffset(float o)
+    {
+        iosOffset = o;
+        if(iosOffset < 1)
+        {
+            iosOffset = 1;
+        }
+        else if(iosOffset > 5)
+        {
+            iosOffset = 5;
+        }
     }
 
     public interface AnimationEndListener

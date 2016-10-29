@@ -2,6 +2,7 @@
 <resources>
     <declare-styleable name="DrawerContainer">
         <attr name="iosStyle" format="boolean"/>
+        <attr name="iosOffset" format="float"/>
         <attr name="edge" format="boolean"/>
         <attr name="pad" format="dimension"/>
         <attr name="edgePad" format="dimension"/>

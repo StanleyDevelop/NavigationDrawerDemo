@@ -3,6 +3,7 @@
                                 xmlns:custom="http://schemas.android.com/apk/res-auto"
                                 android:id="@+id/main_drawer"
                                 custom:iosStyle="true"
+                                custom:iosOffset="2"
                                 custom:edge="true"
                                 custom:pad="56dp"
                                 custom:edgePad="16dp"

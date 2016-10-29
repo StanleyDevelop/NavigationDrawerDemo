@@ -1,52 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:background="@color/colorPrimary"
-              android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
-    <TextView
-        android:text="@string/app_name"
-        android:textSize="18dp"
-        android:textAllCaps="true"
-        android:textStyle="bold"
-        android:textColor="@color/white"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:layout_margin="8dp"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <Button
+        android:id="@+id/ios_style_switch"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:text="ios"/>
+
+    <Button
+        android:id="@+id/edge_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="edge"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Speed factor"
+        android:textColor="@color/white"/>
+
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
+
         <Button
-            android:id="@+id/ios_style_switch"
-            android:text="ios"
+            android:id="@+id/speed_factor_1"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:text="1x"/>
+
         <Button
-            android:id="@+id/edge_switch"
-            android:text="edge"
+            android:id="@+id/speed_factor_2"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-        <LinearLayout
+            android:layout_height="wrap_content"
+            android:text="2x"/>
+
+        <Button
+            android:id="@+id/speed_factor_3"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <Button
-                android:id="@+id/speed_factor_1"
-                android:text="1x"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <Button
-                android:id="@+id/speed_factor_2"
-                android:text="2x"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <Button
-                android:id="@+id/speed_factor_3"
-                android:text="3x"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
+            android:layout_height="wrap_content"
+            android:text="3x"/>
     </LinearLayout>
-</FrameLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:text="iOS offset"
+        android:textColor="@color/white"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/ios_offset_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1x"/>
+
+        <Button
+            android:id="@+id/ios_offset_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2x"/>
+
+        <Button
+            android:id="@+id/ios_offset_5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="5x"/>
+    </LinearLayout>
+</LinearLayout>
