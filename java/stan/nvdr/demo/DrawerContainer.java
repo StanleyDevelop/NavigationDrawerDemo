@@ -6,7 +6,10 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.RectF;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -23,6 +26,8 @@ public class DrawerContainer
 
     private float density;
     private boolean iosStyle = true;
+    private boolean jellyStyle = false;
+    private boolean scaleStyle = true;
     private boolean edge = true;
     private float pad = 0;
     private float edgePad = 0;
@@ -42,6 +47,9 @@ public class DrawerContainer
     private float startedTrackingX;
     private float startedTrackingY;
 
+    private float jellyTouchX;
+    private float jellyTouchY;
+
     private Drawable rightDrawable;
 
     private Paint scrimPaint = new Paint();
@@ -55,13 +63,15 @@ public class DrawerContainer
                 0, 0);
         try
         {
-            iosStyle = a.getBoolean(R.styleable.DrawerContainer_iosStyle, false);
+            setIosStyle(a.getBoolean(R.styleable.DrawerContainer_iosStyle, false));
             setIosOffset(a.getFloat(R.styleable.DrawerContainer_speedFactor, 2));
             edge = a.getBoolean(R.styleable.DrawerContainer_edge, false);
             pad = a.getDimension(R.styleable.DrawerContainer_pad, 0);
             edgePad = a.getDimension(R.styleable.DrawerContainer_edgePad, 0);
-            speedFactor = a.getFloat(R.styleable.DrawerContainer_speedFactor, 1);
+            setSpeedFactor(a.getFloat(R.styleable.DrawerContainer_speedFactor, 1));
             setTweaking(a.getFloat(R.styleable.DrawerContainer_tweaking, 2));
+            scaleStyle = a.getBoolean(R.styleable.DrawerContainer_scaleStyle, false);
+            setScaleStyle(scaleStyle);
         }
         finally
         {
@@ -110,6 +120,7 @@ public class DrawerContainer
         }
         if(iosStyle)
         {
+            float mainPosition = drawerPosition + drawerWidth;
             for(int i=0; i<getChildCount(); i++)
             {
                 View v = getChildAt(i);
@@ -117,9 +128,20 @@ public class DrawerContainer
                 {
                     continue;
                 }
-                v.setTranslationX(drawerPosition + drawerWidth);
+                if(scaleStyle)
+                {
+                    float scalingFactor = 1 - ((drawerPosition + drawerWidth)/drawerWidth)/2;
+                    Log.e(getClass().getName(), "scalingFactor " + scalingFactor);
+                    v.setScaleX(scalingFactor);
+                    v.setScaleY(scalingFactor);
+                    v.setTranslationX(mainPosition - (getWidth()*(1-scalingFactor))/2);
+                }
+                else
+                {
+                    v.setTranslationX(mainPosition);
+                }
             }
-            drawerLayout.setTranslationX(drawerPosition/iosOffset);
+            drawerLayout.setTranslationX(drawerPosition/getIosOffset());
         }
         else
         {
@@ -332,7 +354,7 @@ public class DrawerContainer
             if(moveProcess)
             {
                 moveProcess = false;
-                float x = (ev.getX() - startedTrackingX)*speedFactor;
+                float x = (ev.getX() - startedTrackingX)*getSpeedFactor();
                 if(drawerOpened)
                 {
 //                    x = drawerWidth - Math.abs(x);
@@ -366,7 +388,7 @@ public class DrawerContainer
         if(ev.getAction() == MotionEvent.ACTION_MOVE && startedTouch)
         {
             moveProcess = true;
-            float newPosition = (ev.getX() - startedTrackingX)*speedFactor;
+            float newPosition = (ev.getX() - startedTrackingX)*getSpeedFactor();
             if(drawerOpened)
             {
                 newPosition += drawerWidth;
@@ -398,6 +420,8 @@ public class DrawerContainer
                     }
                 });
             }
+            jellyTouchX = ev.getX();
+            jellyTouchY = ev.getY();
             oldPosition = newPosition;
             return true;
         }
@@ -407,29 +431,14 @@ public class DrawerContainer
     @Override
     protected boolean drawChild(Canvas canvas, View child, long drawingTime)
     {
-        if(child == drawerLayout)
+        if(drawerLayout == null)
+        {
+            return super.drawChild(canvas, child, drawingTime);
+        }
+        if(child == getChildAt(0))
         {
             drawChilds(canvas);
         }
-//        boolean result = super.drawChild(canvas, child, drawingTime);
-//        float dpos = drawerPosition + drawerWidth;
-//        if(child == drawerLayout)
-//        {
-//            float scrimOpacity = dpos / drawerWidth;
-//            scrimPaint.setColor((int)(((0x99000000 & 0xff000000) >>> 24) * scrimOpacity) << 24);
-//            canvas.drawRect(dpos, 0, getWidth(), getHeight(), scrimPaint);
-//            if(rightDrawable != null)
-//            {
-//                float alpha = Math.max(0, Math.min(dpos / dp(20), 1.0f));
-//                if(alpha != 0)
-//                {
-//                    rightDrawable.setBounds((int)dpos, child.getTop(), (int)dpos + rightDrawable.getIntrinsicWidth(), child.getBottom());
-//                    rightDrawable.setAlpha((int)(0xff * alpha));
-//                    rightDrawable.draw(canvas);
-//                }
-//            }
-//        }
-//        return result;
         return true;
     }
 
@@ -447,14 +456,42 @@ public class DrawerContainer
             }
             super.drawChild(canvas, getChildAt(i), 0);
         }
+        float dpos = drawerPosition + drawerWidth;
+        float scrimOpacity = dpos / drawerWidth;
+        if(jellyStyle)
+        {
+            scrimOpacity *= 4;
+        }
+        scrimPaint.setColor((int)(((0x99000000 & 0xff000000) >>> 24) * scrimOpacity) << 24);
+        if(scaleStyle)
+        {
+            float scalingFactor = 1 - ((drawerPosition + drawerWidth)/drawerWidth)/2;
+            canvas.drawRect(dpos, (getHeight() - getHeight()*scalingFactor)/2, getWidth(), getHeight() - (getHeight() - getHeight()*scalingFactor)/2, scrimPaint);
+        }
+        else
+        {
+            canvas.drawRect(dpos, 0, getWidth(), getHeight(), scrimPaint);
+        }
+        if(jellyStyle)
+        {
+            Paint mPaint = new Paint();
+            try
+            {
+                ColorDrawable color = (ColorDrawable) drawerLayout.getBackground();
+                mPaint.setColor(color.getColor());
+            }
+            catch(Exception e)
+            {
+                mPaint.setColor(Color.BLUE);
+            }
+            float dx = (drawerPosition + drawerWidth)*8;
+            RectF oval3 = new RectF((drawerPosition + drawerWidth)*2 - dx, 0, dx, getHeight());
+            canvas.drawOval(oval3, mPaint);
+        }
         if(!iosStyle)
         {
             super.drawChild(canvas, drawerLayout, 0);
         }
-        float dpos = drawerPosition + drawerWidth;
-        float scrimOpacity = dpos / drawerWidth;
-        scrimPaint.setColor((int)(((0x99000000 & 0xff000000) >>> 24) * scrimOpacity) << 24);
-        canvas.drawRect(dpos, 0, getWidth(), getHeight(), scrimPaint);
     }
 
     private void setDrawerLayout(View d)
@@ -469,10 +506,20 @@ public class DrawerContainer
                 drawerWidth = getMeasuredWidth() - (int)pad;
                 lp.width = drawerWidth;
                 Log.e(getClass().getName(), "drawerWidth " + drawerWidth);
+                Log.e(getClass().getName(), "drawerLayout " + drawerLayout);
                 drawerLayout.setLayoutParams(lp);
                 setDrawerPosition(0);
             }
         });
+        try
+        {
+            ColorDrawable color = (ColorDrawable) drawerLayout.getBackground();
+            setBackgroundColor(color.getColor());
+        }
+        catch(Exception e)
+        {
+            Log.e(getClass().getName(), "setDrawerLayout " + e.getMessage());
+        }
     }
 
     public void setRightDrawable(Drawable s)
@@ -482,7 +529,19 @@ public class DrawerContainer
     public void setIosStyle(boolean i)
     {
         iosStyle = i;
+        if(!iosStyle)
+        {
+            scaleStyle = false;
+        }
         setDrawerPosition(0);
+    }
+    public void setScaleStyle(boolean s)
+    {
+        scaleStyle = s;
+        if(s)
+        {
+            setIosStyle(true);
+        }
     }
     public void setEdge(boolean e)
     {
@@ -492,6 +551,14 @@ public class DrawerContainer
     public void setSpeedFactor(float f)
     {
         speedFactor = f;
+    }
+    private float getSpeedFactor()
+    {
+        if(jellyStyle)
+        {
+            return 0.1f;
+        }
+        return speedFactor;
     }
 
     public void setIosOffset(float o)
@@ -505,6 +572,14 @@ public class DrawerContainer
         {
             iosOffset = 5;
         }
+    }
+    private float getIosOffset()
+    {
+        if(scaleStyle)
+        {
+            return 1f;
+        }
+        return iosOffset;
     }
     public void setTweaking(float t)
     {

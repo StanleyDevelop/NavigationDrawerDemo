@@ -59,6 +59,12 @@ public class MainActivity
                                        {
                                            drawerContainer.setTweaking(f);
                                        }
+
+                                       @Override
+                                       public void scaleStyleSwitch(boolean s)
+                                       {
+                                           drawerContainer.setScaleStyle(s);
+                                       }
                                    }))
                                    .commit();
         getSupportFragmentManager().beginTransaction()
